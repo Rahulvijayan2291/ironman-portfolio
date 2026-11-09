@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>Stark Systems // Project Info</title>
+<style>
+  :root {
+    --bg: #05070b; --panel: #0d1219; --panel2: #121a24; --line: #1f2a38;
+    --text: #d8e2ee; --muted: #8496ab; --cyan: #35dfff; --red: #ff4b3a; --amber: #ffb04a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 15px/1.65 -apple-system, "Segoe UI", system-ui, sans-serif;
+  }
+  .layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); max-width: 1180px; margin: 0 auto; }
+  nav.toc {
+    position: sticky; top: 0; align-self: start; height: 100vh; overflow: auto;
+    padding: 32px 20px; border-right: 1px solid var(--line);
+  }
+  nav.toc h2 { font-size: 11px; letter-spacing: .2em; color: var(--cyan); margin: 0 0 14px; }
+  nav.toc a { display: block; color: var(--muted); text-decoration: none; padding: 4px 0; font-size: 13px; }
+  nav.toc a:hover { color: var(--cyan); }
+  main { padding: 40px 36px 80px; min-width: 0; }
+  header.top { border-bottom: 1px solid var(--line); padding-bottom: 24px; margin-bottom: 8px; }
+  .tag { font: 11px/1 ui-monospace, Menlo, monospace; letter-spacing: .2em; color: var(--cyan); }
+  h1 { font-size: 32px; line-height: 1.2; margin: 10px 0 8px; }
+  h2 { font-size: 22px; margin: 48px 0 12px; padding-top: 8px; border-top: 1px solid var(--line); }
+  h2 .n { color: var(--cyan); font: 13px ui-monospace, Menlo, monospace; margin-right: 10px; }
+  h3 { font-size: 16px; margin: 28px 0 8px; color: #fff; }
+  p { margin: 8px 0; }
+  .lead { color: var(--muted); font-size: 16px; max-width: 70ch; }
+  a { color: var(--cyan); }
+  code, .mono { font: 12.5px ui-monospace, Menlo, Consolas, monospace; }
+  code { background: var(--panel2); border: 1px solid var(--line); padding: 1px 6px; border-radius: 4px; color: #bfefff; }
+  pre {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: 14px 16px; overflow: auto; font: 12.5px/1.6 ui-monospace, Menlo, Consolas, monospace; color: #cfe6f5;
+  }
+  pre code { background: none; border: 0; padding: 0; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 12px; border: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--panel2); color: #fff; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+  td { background: var(--panel); }
+  ul, ol { padding-left: 22px; }
+  li { margin: 4px 0; }
+  .note, .warn {
+    border-left: 3px solid var(--cyan); background: var(--panel); padding: 10px 14px; margin: 14px 0; border-radius: 0 6px 6px 0;
+  }
+  .warn { border-left-color: var(--amber); }
+  .note b, .warn b { color: #fff; }
+  /* flow diagrams */
+  .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 14px 0; }
+  .box {
+    flex: 1 1 150px; background: var(--panel2); border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 12px; font-size: 13px;
+  }
+  .box b { display: block; color: var(--cyan); font: 600 11px ui-monospace, Menlo, monospace; letter-spacing: .08em; margin-bottom: 4px; }
+  .arrow { align-self: center; color: var(--muted); font-size: 18px; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin: 14px 0; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px; }
+  .card h4 { margin: 0 0 6px; font-size: 13px; letter-spacing: .08em; color: var(--cyan); font-family: ui-monospace, Menlo, monospace; }
+  .card p, .card li { font-size: 13.5px; }
+  footer { margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; text-align: center; }
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+    nav.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+    main { padding: 28px 18px 60px; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc" aria-label="Contents">
+  <h2>CONTENTS</h2>
+  <a href="#idea">1. The idea</a>
+  <a href="#stack">2. Tech stack</a>
+  <a href="#structure">3. Project structure</a>
+  <a href="#arch">4. Architecture</a>
+  <a href="#glb">5. GLB to action model</a>
+  <a href="#director">6. Scroll director</a>
+  <a href="#fx">7. Effects (FX)</a>
+  <a href="#interaction">8. Interaction</a>
+  <a href="#intro">9. Intro and boot</a>
+  <a href="#perf">10. Performance and a11y</a>
+  <a href="#runbook">11. Run, build, tune</a>
+  <a href="#notes">12. Known notes</a>
+</nav>
+
+<main>
+<header class="top">
+  <div class="tag">STARK SYSTEMS // RAHUL VIJAYAN</div>
+  <h1>Iron Man 3D Portfolio: Complete Project Info</h1>
+  <p class="lead">How the portfolio works from scratch: the concept, the architecture, how a plain GLB file becomes a scripted, animated "action model", and how the scroll, camera, effects and page content fit together. All details are taken from the source code in this repository.</p>
+</header>
+
+<!-- 1 -->
+<h2 id="idea"><span class="n">01</span>The idea</h2>
+<p>The site is a normal portfolio (Hero, About, Experience, Skills, Projects, Achievements, Contact) laid over <b>one fixed, page-wide 3D canvas</b>. That canvas shows a single Iron Man suit. As the visitor scrolls, the suit behaves like an actor following a script.</p>
+
+<table>
+  <tr><th>Page position</th><th>What the suit does</th></tr>
+  <tr><td>Hero</td><td>Helmet close-up, eyes and reactor power up, camera pulls back to full body on the right.</td></tr>
+  <tr><td>About</td><td>Flight: lifts off, sweeps across the page, exits the left edge and re-enters from the right.</td></tr>
+  <tr><td>Experience</td><td>Lands beside the text and fires its repulsors.</td></tr>
+  <tr><td>Skills to Achievements</td><td>Off-stage, so dense content gets the whole screen.</td></tr>
+  <tr><td>Contact</td><td>Returns and runs a holographic scan sweep.</td></tr>
+</table>
+
+<div class="note"><b>Content never depends on 3D.</b> A WebP poster of the same model paints first (it is the LCP element). It remains the fallback when WebGL is unavailable, the GL context is lost, or the visitor prefers reduced motion.</div>
+
+<!-- 2 -->
+<h2 id="stack"><span class="n">02</span>Tech stack</h2>
+<table>
+  <tr><th>Layer</th><th>Tools</th></tr>
+  <tr><td>Build</td><td>Vite + TypeScript. <code>base: './'</code> makes the build portable (root domain, sub-path, GitHub Pages). Manual chunks for <code>motion</code> and <code>gsap</code>.</td></tr>
+  <tr><td>UI</td><td>React (StrictMode), Framer Motion (reduced-motion detection, reveals), GSAP (intro timeline, lazy-loaded).</td></tr>
+  <tr><td>3D</td><td>three.js through React Three Fiber and Drei (<code>useGLTF</code>, <code>Environment</code>, <code>Lightformer</code>, <code>ContactShadows</code>, <code>Sparkles</code>, <code>PerformanceMonitor</code>, <code>AdaptiveDpr</code>).</td></tr>
+  <tr><td>Model tooling</td><td>glTF-Transform, meshoptimizer, sharp (one-off script, not a project dependency).</td></tr>
+  <tr><td>Content</td><td>A single data file, <code>src/data/content.ts</code>. Unknown values are <code>null</code> and shown as explicit placeholders.</td></tr>
+</table>
+
+<!-- 3 -->
+<h2 id="structure"><span class="n">03</span>Project structure</h2>
+<pre><code>ironman-portfolio/
+  index.html                  Vite entry
+  info.html                   this document
+  vite.config.ts
+  model-source/ironman.original.glb   untouched original (not served)
+  scripts/optimize-model.mjs          reproducible GLB optimisation
+  public/
+    models/ironman.glb        2K textures (4.7 MB)
+    models/ironman-lite.glb   1K textures (3.3 MB)
+    poster.webp  og-image.jpg  profile.jpg  favicon.svg
+  src/
+    main.tsx  App.tsx
+    data/content.ts           all copy, links, placeholders
+    components/
+      Intro.tsx               GSAP boot sequence overlay
+      SceneLayer.tsx          fixed 3D layer, poster, pointer/drag/click
+      Navbar.tsx  Cursor.tsx  Reveal.tsx  SectionHead.tsx  ReactorMark.tsx
+      sections/               Hero About Experience Skills Projects Achievements Contact
+    three/
+      bus.ts                  shared mutable state (the bridge)
+      director.ts             scroll to keyframes
+      Stage.tsx               Canvas, lights, environment, camera Rig
+      Armor.tsx               GLB fit, rig, state machine, per-frame pose
+      actions.ts              poses and action timelines
+      anchors.ts              bone-attached anchor points
+      Fx.tsx                  reactor, repulsors, thrusters, scan ring
+      glow.ts quality.ts webgl.ts
+    lib/sound.ts session.ts   hooks/useCountUp.ts   styles/*.css</code></pre>
+
+<!-- 4 -->
+<h2 id="arch"><span class="n">04</span>Architecture</h2>
+<p>Three actors share one plain object, <code>bus</code> (<code>src/three/bus.ts</code>): the DOM (scroll, buttons, pointer, GSAP), the scroll director, and the R3F scene. Because the bus is mutable and not React state, per-frame values never trigger re-renders. React state is used only for slow things: scene status, hero phase and the action label.</p>
+
+<div class="flow">
+  <div class="box"><b>DOM EVENTS</b>scroll, pointer, drag, click, GSAP intro</div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>director.ts</b>scroll &rarr; keyframes &rarr; <code>bus.shot</code>, <code>bus.mode</code></div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>bus.ts</b>shot, view, mode, pending, fx, power, reveal, rootQ</div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>Stage / Rig</b>eases <code>view</code> to <code>shot</code>, moves camera</div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>Armor</b>state machine, poses, drives bones, publishes <code>fx</code></div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>Fx</b>reads <code>bus.fx</code>: glow, beams, flames</div>
+</div>
+
+<h3>Responsibilities by file</h3>
+<table>
+  <tr><th>File</th><th>Role</th></tr>
+  <tr><td><code>App.tsx</code></td><td>Renders the page, starts the director, shows the intro overlay. The page is always rendered underneath the intro.</td></tr>
+  <tr><td><code>SceneLayer.tsx</code></td><td>Fixed layer. Shows the poster, lazy-mounts <code>Stage</code> after <code>load</code> and idle, handles pointer head-tracking, drag-to-rotate and click-to-fire, and the screen-reader live region.</td></tr>
+  <tr><td><code>Intro.tsx</code></td><td>GSAP boot sequence animating <code>bus.reveal</code> from 0 to 1. Waits up to 1.8 s for the model. Skippable by button or Esc.</td></tr>
+  <tr><td><code>director.ts</code></td><td>Builds a keyframe track from real section positions and interpolates it on scroll.</td></tr>
+  <tr><td><code>Stage.tsx</code></td><td>Canvas, lights, procedural studio environment, volumetric cone, floor rings, contact shadow, camera <code>Rig</code>.</td></tr>
+  <tr><td><code>Armor.tsx</code></td><td>Loads and rigs the GLB, runs the action state machine and the per-frame pose.</td></tr>
+  <tr><td><code>actions.ts</code></td><td>Pose data (joint deltas) and action timelines.</td></tr>
+  <tr><td><code>anchors.ts</code></td><td>Creates bone-parented anchors for effects.</td></tr>
+  <tr><td><code>Fx.tsx</code></td><td>Chest reactor, repulsors and beams, boot thrusters, floor and scan rings.</td></tr>
+  <tr><td><code>quality.ts</code></td><td>Chooses full or lite GLB, DPR range, sparkle count from device hints.</td></tr>
+</table>
+
+<h3>The bus at a glance</h3>
+<table>
+  <tr><th>Field</th><th>Written by</th><th>Read by</th><th>Meaning</th></tr>
+  <tr><td><code>shot</code></td><td>director</td><td>Rig</td><td>Target camera/placement keyframe (dist, look, fx, fy, yaw, pitch, bank, alpha, floor).</td></tr>
+  <tr><td><code>view</code></td><td>Rig</td><td>Armor, Fx, Atmosphere</td><td>Eased copy of <code>shot</code>.</td></tr>
+  <tr><td><code>mode</code></td><td>director</td><td>Armor</td><td>Looped action for the current page region: <code>none | fire | flight | scan</code>.</td></tr>
+  <tr><td><code>pending</code></td><td>click / <code>triggerAction</code></td><td>Armor</td><td>Visitor-requested action or <code>'stop'</code>.</td></tr>
+  <tr><td><code>fx</code></td><td>Armor</td><td>Fx, Stage</td><td>Per-frame intensities: beamL, beamR, thrust, lift, scanP, scanA, reactor.</td></tr>
+  <tr><td><code>reveal</code></td><td>Intro (GSAP)</td><td>Lights, Fx, Armor</td><td>0 darkness to 1 full lighting.</td></tr>
+  <tr><td><code>power</code></td><td>Armor</td><td>Fx</td><td>0 dead visor/reactor to 1 lit. Follows the <code>ignite()</code> curve.</td></tr>
+  <tr><td><code>rootQ</code></td><td>Armor</td><td>Thruster</td><td>World quaternion of the suit root so flames vent along the body.</td></tr>
+  <tr><td><code>status</code>, <code>visible</code></td><td>SceneLayer, Rig</td><td>DOM, Stage</td><td>Scene lifecycle and whether to render at all.</td></tr>
+</table>
+
+<!-- 5 -->
+<h2 id="glb"><span class="n">05</span>From a normal GLB to an action model</h2>
+<div class="warn"><b>Key fact:</b> the supplied GLB has <b>no usable animation</b>. It contains 3 clips, all T-pose, and nothing for fire, flight or scan. All motion is authored in code on top of the model's skeleton.</div>
+
+<div class="flow">
+  <div class="box"><b>1. INSPECT</b>original 37.5 MB</div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>2. OPTIMISE</b>4.7 MB full / 3.3 MB lite</div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>3. LOAD + CLONE</b>own skeleton instance</div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>4. FIT</b>scale to 3.4 units, feet at y=0</div>
+</div>
+<div class="flow">
+  <div class="box"><b>5. ANCHOR</b>FX parented to bones</div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>6. RIG TABLE</b>bone, rest quat, parent quat</div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>7. AUTHOR</b>POSES + sampleAction</div>
+  <div class="arrow">&rarr;</div>
+  <div class="box"><b>8. DRIVE</b>per-frame bone rotations</div>
+</div>
+
+<h3>Step 1: inspect the original</h3>
+<ul>
+  <li>One skinned mesh <code>Iron_Man_mark_7_Subsurf_</code>, about 137k vertices and 143k triangles.</li>
+  <li>One PBR material: base colour, normal, metal-rough and a <b>baked emissive</b> texture (visor and reactor are already painted in), four 4096&sup2; PNGs.</li>
+  <li>The mesh is skinned <b>only</b> to the <code>iron man_Rigify</code> armature (<code>DEF-*</code> bones). Two other armatures (CC rig, metarig) and IK helper nodes are unused.</li>
+  <li>Three animation clips, all <code>T-Pose</code>.</li>
+</ul>
+
+<h3>Step 2: optimise (<code>scripts/optimize-model.mjs</code>)</h3>
+<p>Built with glTF-Transform. It produces two files from <code>model-source/ironman.original.glb</code>:</p>
+<table>
+  <tr><th>Output</th><th>Texture size</th><th>WebP quality</th></tr>
+  <tr><td><code>public/models/ironman.glb</code></td><td>2048</td><td>82</td></tr>
+  <tr><td><code>public/models/ironman-lite.glb</code></td><td>1024</td><td>78</td></tr>
+</table>
+<ol>
+  <li>Dispose all animations (all T-pose, unused).</li>
+  <li>Dispose every scene root except the <code>iron man_Rigify</code> node (drops the unused rigs).</li>
+  <li><code>prune</code>, <code>dedup</code>, <code>textureCompress</code> (WebP, resized).</li>
+  <li><code>quantize</code> (position 14, normal 10, texcoord 14 bits) and <code>meshopt</code> compression (medium).</li>
+</ol>
+<p>Materials and textures are otherwise untouched. Because meshopt is used, the loader is called as <code>useGLTF(url, false, true)</code> (Draco off, meshopt on).</p>
+
+<h3>Step 3: load and isolate (<code>Armor.tsx</code>)</h3>
+<p><code>clone(scene)</code> from <code>SkeletonUtils</code> creates an independent skeleton and skinned mesh, then <code>updateMatrixWorld(true)</code> captures the bind pose. Skinned meshes get <code>frustumCulled = false</code> (skinned bounds can lag behind the pose). Textures keep their original materials; only anisotropy is raised to 8. The original <code>emissiveIntensity</code> of each material is stored in <code>userData.baseEI</code> so the power-up can scale it later.</p>
+
+<h3>Step 4: fit to the stage</h3>
+<pre><code>box    = Box3.setFromObject(model)
+scale  = SUIT_HEIGHT (3.4) / box.size.y
+offset = (-centre.x*scale, -box.min.y*scale, -centre.z*scale)   // feet on y=0, centred</code></pre>
+<p>The model sits in nested groups, outermost first: <code>lift</code> (hover and recoil), <code>lean</code> (pivot at the hip, <code>HIP_Y = 1.75</code>; body pitch, yaw, bank), then the offset/scale group holding the model.</p>
+
+<h3>Step 5: anchor effects to real bones (<code>anchors.ts</code>)</h3>
+<p>Effect positions were <b>measured on the real geometry</b> (ray-casts on the skinned mesh and bone world positions), in model space at bind pose:</p>
+<table>
+  <tr><th>Anchor</th><th>Bone</th><th>Point (model space)</th><th>Normal</th></tr>
+  <tr><td>chest (arc reactor)</td><td><code>DEF-spine003</code></td><td>(0, 3.81, 0.451)</td><td>(-0.05, 0.32, 0.95)</td></tr>
+  <tr><td>palmL</td><td><code>DEF-handL</code></td><td>(0.905, 2.57, 0.045)</td><td>(-0.98, -0.17, -0.06)</td></tr>
+  <tr><td>palmR</td><td><code>DEF-handR</code></td><td>(-0.905, 2.57, 0.045)</td><td>(0.98, -0.17, -0.06)</td></tr>
+  <tr><td>eyeL / eyeR</td><td><code>DEF-spine006</code> (head)</td><td>(&plusmn;0.1, 4.545, 0.347)</td><td>(&plusmn;0.12, 0, 0.99)</td></tr>
+  <tr><td>soleL / soleR</td><td>foot bones</td><td>(&plusmn;0.428, 0.03, 0.12)</td><td>(0, -1, 0)</td></tr>
+</table>
+<p><code>createAnchor(root, bone, point, normal, lift)</code> must run while the model is still in bind pose and untransformed. It:</p>
+<ol>
+  <li>Moves the point out along the normal by <code>lift</code> (avoids z-fighting with the surface).</li>
+  <li>Converts it to bone-local space with <code>inverse(bone.matrixWorld)</code>.</li>
+  <li>Rotates the anchor so local <b>+Z</b> equals the surface normal.</li>
+  <li>Cancels the bone's world scale, so effects are authored in plain model units.</li>
+  <li><code>bone.add(anchor)</code>: the anchor is now a child of the bone.</li>
+</ol>
+<p>React then renders effects into those anchors with <code>createPortal(&lt;ChestReactor/&gt;, anchors.chest)</code> (same for repulsors and thrusters). Since an anchor is a child of a bone, the glow moves with the skeleton and never floats independently.</p>
+
+<h3>Step 6: build the posing rig</h3>
+<p><code>BONE_NODES</code> in <code>actions.ts</code> maps 20 logical joints (pelvis, spine1/2, chest, neck, head, shoulders, upper arms, forearms, hands, thighs, shins, feet) to Rigify bone names. For each, <code>poseBone()</code> stores the bone, its <b>rest quaternion</b>, and its parent's world quaternion (and the inverse) at bind. The core of the whole system is <code>drive()</code>:</p>
+<pre><code>bone.quaternion = parentInv * delta * parent * rest
+// delta = Euler(pitch, yaw, roll, order 'YXZ') in MODEL-SPACE axes</code></pre>
+<p>This expresses every pose as a rotation in model-space axes layered on top of the bind rotation. Rigify bone-local axes are arbitrary; this lets poses be authored intuitively (the suit faces +Z, arms hang down -Y; arm pitch &lt; 0 swings forward, &gt; 0 back; left-arm roll &gt; 0 lifts outward).</p>
+
+<h3>Step 7: author the actions (<code>actions.ts</code>)</h3>
+<div class="cols">
+  <div class="card">
+    <h4>POSES</h4>
+    <p>Joint deltas as <code>[pitch, yaw, roll]</code> radians per bone: <code>fireL</code>, <code>fireR</code>, <code>flight</code>, <code>scan</code>.</p>
+    <ul>
+      <li><code>limbs('L'|'R', set)</code> writes the left side once and mirrors for the right (pitch shared; yaw and roll flip).</li>
+      <li><code>merge()</code> sums poses.</li>
+      <li><code>AIM</code>: arm raised about 65&deg; and angled outward, wrist extended, hand rolled about 90&deg; so the palm repulsor faces down the arm.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>TIMELINES</h4>
+    <p><code>sampleAction(name, t, frame, hold)</code> fills an <code>ActionFrame</code> of target weights (armL, armR, beamL, beamR, flight, scan, scanP, scanA, recoil) from envelope helpers:</p>
+    <ul>
+      <li><code>sstep</code>: smoothstep.</li>
+      <li><code>pulse(t, a, b, rin, rout)</code>: rise, hold, fall.</li>
+      <li><code>kick(t, at, rate)</code>: exponentially decaying impulse (recoil).</li>
+    </ul>
+  </div>
+</div>
+
+<table>
+  <tr><th>Action</th><th>Duration</th><th>Sequence</th></tr>
+  <tr><td><b>fire</b></td><td>3.6 s</td><td>Right arm up 0&ndash;2.1 s, left arm 1.0&ndash;3.1 s. Beams at 0.5 s (R) and 1.5 s (L), each with a recoil kick. Torso twists toward the aiming side.</td></tr>
+  <tr><td><b>flight</b></td><td>5.2 s</td><td>Arms sweep back, legs trail, head tilts up, body leans forward and lifts. Thrusters ignite.</td></tr>
+  <tr><td><b>scan</b></td><td>3.8 s</td><td>Arms open, head sweeps left and right while <code>scanP</code> (0.35&ndash;3.0 s) drives a ring up the body; <code>scanA</code> controls its visibility.</td></tr>
+</table>
+<p>With <code>hold = true</code> (used when the scroll director owns the action) fire and scan loop via <code>t % DURATION</code>, and flight stays engaged. <code>ignite(t)</code> is the power-up curve: dark, then flicker, then fully lit.</p>
+
+<h3>Step 8: the per-frame loop (<code>useFrame</code> in <code>Armor</code>)</h3>
+<ol>
+  <li><b>Power-up.</b> Once <code>bus.reveal &gt; 0.55</code>, <code>powerT</code> counts up and <code>ignite()</code> sets <code>bus.power</code>. Each material's <code>emissiveIntensity = baseEI * (0.04 + 0.96 * power)</code>, which lights the baked visor and reactor.</li>
+  <li><b>State machine.</b> A visitor action in <code>bus.pending</code> wins (start or <code>'stop'</code>). Otherwise, if idle or already in a held action, the suit follows <code>bus.mode</code> from the director.</li>
+  <li><b>Sample.</b> Advance <code>sim.t</code>, call <code>sampleAction</code>. A non-held action stops itself at <code>DURATION</code>.</li>
+  <li><b>Smooth.</b> <code>MathUtils.damp</code> eases each weight (arms 9, flight 4, scan 5, recoil 30). Under reduced motion the rate is multiplied by 1000, so it is effectively instant.</li>
+  <li><b>Mix.</b> Zero a per-bone scratch sum, add <b>idle life</b> (breathing, weight shift, arm sway, glances, scaled by <code>calm</code>, which drops as actions engage), then <code>addPose(POSES.x, weight)</code> for each pose, recoil, and head/neck pointer tracking plus the scan look.</li>
+  <li><b>Drive.</b> <code>drive(rig[key], pitch, yaw, roll)</code> for every bone. This is where the pose reaches the skeleton and the skinned mesh deforms.</li>
+  <li><b>Whole body.</b> Hover, lift, forward lean, yaw (shot plus drag plus arm-difference twist), bank. The world quaternion is saved to <code>bus.rootQ</code>.</li>
+  <li><b>Publish.</b> Write <code>bus.fx</code> (beamL/R, thrust, lift, scanP/A, reactor). The FX components only read these values, so the skeleton and the effects stay in sync with no events between them.</li>
+</ol>
+<p>No React state and no per-frame allocations are used in this loop; scratch quaternions and arrays are reused.</p>
+
+<!-- 6 -->
+<h2 id="director"><span class="n">06</span>Scroll director and camera</h2>
+<h3><code>director.ts</code></h3>
+<p><code>build()</code> measures the actual positions of <code>#home</code>, <code>#about</code>, <code>#experience</code>, <code>#skills</code>, <code>#contact</code> and builds an array of keyframes <code>{ y, mode, dist, look, fx, fy, yaw, pitch, bank, alpha, floor }</code>. It rebuilds on resize, on a <code>ResizeObserver</code> of the body, and once more 1.2 s after load, so it survives any content height or viewport size. Distances are computed from the 30&deg; field of view so the suit takes the same share of the viewport at any aspect ratio.</p>
+<p><code>apply()</code> runs on a rAF-throttled scroll event: it finds the surrounding keys, lerps all numeric fields (distance logarithmically), writes <code>bus.shot</code> and <code>bus.mode</code>, sets the <code>--hero-p</code> CSS variable and publishes the hero <b>phase</b>.</p>
+
+<table>
+  <tr><th>Hero phase</th><th>Meaning</th></tr>
+  <tr><td>0</td><td>Face and name (helmet close-up).</td></tr>
+  <tr><td>1</td><td>Camera starts to pull back; main copy fades in.</td></tr>
+  <tr><td>2</td><td>Full body on the right; drag/click interaction enabled.</td></tr>
+  <tr><td>3</td><td>Past the hero.</td></tr>
+</table>
+
+<div class="cols">
+  <div class="card"><h4>WIDE VS NARROW</h4><p>Wide = width &ge; 900 and aspect &gt; 1.15. Narrow layouts centre the suit, pull it further back and dim it (alpha 0.28 beside text).</p></div>
+  <div class="card"><h4>FLIGHT TRICK</h4><p>The suit exits left, then a 2 px jump in keys brings it in from the right. The Rig snaps <code>view.fx</code> when the jump exceeds 1.0 instead of sliding across the screen.</p></div>
+  <div class="card"><h4>STANDING SPOT</h4><p>Next to a section with a <code>[data-gutter]</code> column, the suit's x shift is computed from that column's right edge so it never covers the copy.</p></div>
+</div>
+
+<h3>Camera rig (<code>Stage.tsx &rarr; Rig</code>)</h3>
+<ul>
+  <li>Eases <code>bus.view</code> toward <code>bus.shot</code> with <code>damp</code> (smooths scroll jitter).</li>
+  <li>Camera sits at <code>(0, look, dist)</code> looking at <code>(0, look, 0)</code>.</li>
+  <li>Uses <code>camera.setViewOffset</code> to shift the suit sideways/vertically on screen without moving the camera off-axis.</li>
+  <li>Writes the canvas layer's CSS opacity from <code>view.alpha</code>.</li>
+  <li>When fully faded out (and not returning) for 0.35 s it calls <code>setVisible(false)</code>; the canvas <code>frameloop</code> becomes <code>'never'</code> and nothing renders until the director wakes it.</li>
+</ul>
+
+<h3>Lighting and environment</h3>
+<ul>
+  <li>Warm key spotlight, red and blue rim directionals, hemisphere fill; all intensities multiplied by <code>bus.reveal</code>.</li>
+  <li>Procedural studio reflections via <code>Environment</code> + <code>Lightformer</code> (no HDR download), rendered once (<code>frames={1}</code>).</li>
+  <li>ACES filmic tone mapping, exposure 1.05, transparent canvas.</li>
+  <li><code>Atmosphere</code>: additive volumetric spotlight cone (fresnel-style shader) and two floor rings.</li>
+  <li><code>ContactShadows</code> baked once, visible only while grounded.</li>
+</ul>
+
+<!-- 7 -->
+<h2 id="fx"><span class="n">07</span>Effects (<code>Fx.tsx</code>)</h2>
+<p>Each is portalled into a bone anchor (local +Z is the surface normal) and driven purely by <code>bus</code> values.</p>
+<table>
+  <tr><th>Component</th><th>Parented to</th><th>Behaviour</th></tr>
+  <tr><td><code>ChestReactor</code></td><td>chest anchor</td><td>Cyan plasma disc over the baked white emissive disc, three rotating arcs, halo sprite, point light. Pulses, and boosts with <code>fx.reactor</code> and <code>power</code>.</td></tr>
+  <tr><td><code>Repulsor</code> (L/R)</td><td>palm anchors</td><td>Ring, core and halo sprites plus light. On <code>fx.beamL/R</code> a two-layer additive shader beam (outer tube + white inner tube, 6.5 units long) fires and flickers.</td></tr>
+  <tr><td><code>Thruster</code> (x2)</td><td>sole anchors</td><td>Flame cones and glow. The exhaust is re-aimed every frame: straight down when upright, along the body (via <code>rootQ</code>) when cruising.</td></tr>
+  <tr><td><code>StageFx</code></td><td>scene (not bone)</td><td>Floor shockwave rings and glow while grounded and thrusting; a scan ring rising with <code>scanP</code> through the suit's height.</td></tr>
+  <tr><td><code>EyeGlow</code></td><td>head anchors</td><td>Defined in code (see notes). Sprites and a point light tied to <code>bus.power</code>.</td></tr>
+</table>
+<p>Glow textures come from <code>glow.ts</code>: radial gradients drawn on a canvas and cached, so no image assets are needed. The beam and flame shaders share one fresnel-style fragment that fades along the length.</p>
+
+<!-- 8 -->
+<h2 id="interaction"><span class="n">08</span>Interaction</h2>
+<ul>
+  <li><b>Pointer head tracking.</b> Mouse only (<code>pointerType === 'mouse'</code>); touch keeps native scrolling. Reduced while an action runs, while the body is yawed, and entirely under reduced motion.</li>
+  <li><b>Drag</b> the invisible <code>.scene-hit</code> area to turn the suit (clamped &plusmn;1.6 rad); it springs back on release.</li>
+  <li><b>Click without dragging</b> (movement &lt; 6 px) calls <code>triggerAction('fire')</code>. Triggering the running action again cancels it.</li>
+  <li>The hit area exists only in hero phase 2 and when the scene is ready.</li>
+  <li><b>Idle life:</b> breathing, weight shift, arm sway and glances.</li>
+  <li><b>Sound</b> is procedural (<code>sound.ts</code>, no audio files), off by default, and only plays if the visitor turns it on.</li>
+</ul>
+
+<!-- 9 -->
+<h2 id="intro"><span class="n">09</span>Intro and boot sequence</h2>
+<ol>
+  <li>If the intro has not been seen this session (<code>session.ts</code>) and reduced motion is off, <code>Intro</code> overlays the already-rendered page.</li>
+  <li>GSAP is lazy-imported. <code>bus.reveal = 0</code> (scene dark). The reactor icon fades in, boot lines type out, a progress bar fills, a scan line passes.</li>
+  <li>At the <code>reveal</code> label the timeline pauses until <code>whenReady(1800)</code> resolves (model parsed, or timeout), so the reveal never plays on an empty stage.</li>
+  <li>The veil opens, <code>bus.reveal</code> tweens 0 &rarr; 1, the power sound plays, "STARK SYSTEMS ONLINE" appears.</li>
+  <li>Once <code>reveal</code> passes 0.55, <code>Armor</code> starts the <code>ignite()</code> curve: visor and reactor flicker on.</li>
+  <li>Skip with the button or <kbd>Esc</kbd>; the choice is remembered for the session.</li>
+</ol>
+
+<!-- 10 -->
+<h2 id="perf"><span class="n">10</span>Performance and accessibility</h2>
+<div class="cols">
+  <div class="card">
+    <h4>PERFORMANCE</h4>
+    <ul>
+      <li>3D chunk is <code>lazy()</code>, mounted after <code>load</code> and browser idle; the poster is the LCP.</li>
+      <li><code>detectQuality()</code> uses cores, device memory, pointer type, width and save-data. Tiers: <b>high</b> (full GLB, DPR 1&ndash;2, 90 sparkles), <b>medium</b> (lite GLB, DPR 1&ndash;1.5, 36), <b>low</b> (lite, DPR 1&ndash;1.25, no sparkles, no AA).</li>
+      <li><code>PerformanceMonitor</code> and <code>AdaptiveDpr</code> lower DPR at runtime.</li>
+      <li>Render loop stops when the suit is off-stage or the tab is hidden.</li>
+      <li>Shadows and environment are baked once.</li>
+      <li>GL context loss falls back to the poster.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h4>ACCESSIBILITY</h4>
+    <ul>
+      <li>Reduced motion: static layout, no intro, no idle motion, no lift/lean, instant damping, no auto scrolling.</li>
+      <li>Canvas is <code>aria-hidden</code>; an <code>sr-only</code> live region announces actions.</li>
+      <li>Skip link, visible focus rings, accessible mobile menu, announced form errors.</li>
+      <li>Custom cursor is decorative, and disabled on touch or reduced motion.</li>
+      <li>Poster has real alt text.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- 11 -->
+<h2 id="runbook"><span class="n">11</span>Run, build, tune</h2>
+<pre><code>npm install
+cp .env.example .env     # optional
+npm run dev              # http://localhost:5173
+npm run build            # tsc -b + production build -> dist/
+npm run preview          # http://localhost:4173</code></pre>
+
+<table>
+  <tr><th>Env variable</th><th>Purpose</th></tr>
+  <tr><td><code>VITE_LINKEDIN_URL</code></td><td>LinkedIn link. Until set, Contact shows a visible placeholder.</td></tr>
+  <tr><td><code>VITE_FORM_ENDPOINT</code></td><td>Optional form backend (e.g. Formspree). If empty, the form validates and opens a prefilled email draft.</td></tr>
+  <tr><td><code>VITE_SITE_URL</code></td><td>Production origin, injected into absolute Open Graph URLs at build time.</td></tr>
+</table>
+
+<h3>Re-optimise the model</h3>
+<pre><code>npm i --no-save @gltf-transform/core @gltf-transform/extensions @gltf-transform/functions meshoptimizer sharp
+node scripts/optimize-model.mjs</code></pre>
+
+<h3>Where to change things</h3>
+<table>
+  <tr><th>I want to&hellip;</th><th>Edit</th></tr>
+  <tr><td>Change a pose or an action's timing</td><td><code>POSES</code>, <code>sampleAction</code>, <code>DURATION</code> in <code>src/three/actions.ts</code></td></tr>
+  <tr><td>Change where the suit is during a section</td><td>Keyframe list in <code>build()</code> in <code>src/three/director.ts</code></td></tr>
+  <tr><td>Move a glow/effect on the suit</td><td><code>ANCHOR_SPECS</code> in <code>src/three/anchors.ts</code></td></tr>
+  <tr><td>Change effect looks</td><td><code>src/three/Fx.tsx</code>, <code>glow.ts</code></td></tr>
+  <tr><td>Change lights, environment, camera feel</td><td><code>src/three/Stage.tsx</code></td></tr>
+  <tr><td>Change copy, links, experience, projects</td><td><code>src/data/content.ts</code></td></tr>
+  <tr><td>Change quality tiers</td><td><code>src/three/quality.ts</code></td></tr>
+  <tr><td>Swap in a different GLB</td><td>Re-measure anchors, update <code>BONE_NODES</code> bone names, re-tune <code>POSES</code> angles</td></tr>
+</table>
+
+<h3>Deployment</h3>
+<p>Static site, relative base. Build command <code>npm run build</code>, output directory <code>dist</code>. Works on Vercel, Netlify, Cloudflare Pages, GitHub Pages or any static host. Serve <code>/assets/*</code> and <code>/models/*</code> with long-lived immutable cache headers.</p>
+
+<!-- 12 -->
+<h2 id="notes"><span class="n">12</span>Known notes</h2>
+<div class="warn"><b>Debug line:</b> <code>src/three/Armor.tsx</code> line 153 contains <code>window.__r3f = state // TEMP-DEBUG</code>. Remove it before shipping.</div>
+<div class="warn"><b>Unused eye glow:</b> <code>EyeGlow</code> in <code>Fx.tsx</code> and the <code>eyeL</code>/<code>eyeR</code> anchors exist, but <code>Armor</code> does not portal them. The visor currently lights only through the baked emissive texture scaled by <code>bus.power</code>.</div>
+<div class="warn"><b>Charge control:</b> <code>bus.charge</code> (repulsor charge) is read by <code>Repulsor</code>, but no component in <code>src/</code> sets it. The README's "CHARGE REPULSORS" control is not wired up in the current UI.</div>
+<div class="note"><b>Static page:</b> Vite serves this file at <code>/info.html</code> in dev. It is not part of the production build unless you add it to <code>build.rollupOptions.input</code>. It is only documentation.</div>
+<div class="note"><b>Launch checklist</b> (from the README): LinkedIn URL, employment dates for IBM ISL / TCS / ClaySys, ClaySys role details, Vervue live URL, DSA Visualizers links, the unverified LeetCode claim, the profile photo, and <code>VITE_SITE_URL</code>.</div>
+
+<footer>Made with IBM Bob</footer>
+</main>
+</div>
+</body>
+</html>
